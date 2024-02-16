@@ -1,5 +1,6 @@
 package com.owner.product.domain.user.entity;
 
+import com.owner.product.domain.user.security.UserDetailsImpl;
 import com.owner.product.global.base.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
@@ -25,4 +26,12 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private String password;
+
+    public UserDetailsImpl toUserDetails() {
+        return UserDetailsImpl.builder()
+                .id(this.id)
+                .phoneId(this.phoneId)
+                .password(this.password)
+                .build();
+    }
 }
