@@ -9,6 +9,7 @@ import com.owner.product.global.responses.errors.exceptions.RestBusinessExceptio
 import com.owner.product.global.responses.success.codes.UserSuccessCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Slf4j
 public class UserServiceImpl implements UserService {
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
     @Override
     public String register(UserRequestDto.Register userRegisterDto) {
+        userRegisterDto.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
         if(existsPhoneId(userRegisterDto.getPhoneId())) {
             throw new RestBusinessException(UserErrorCode.DUPLICATION);
         }
