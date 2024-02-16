@@ -27,7 +27,7 @@ public class UserRequestDto {
         public User toEntity() {
             return User.builder()
                     .phoneId(this.phoneId)
-                    .password(password)
+                    .password(this.password)
                     .build();
         }
     }
