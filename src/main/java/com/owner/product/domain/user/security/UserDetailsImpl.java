@@ -14,13 +14,13 @@ import java.util.Collection;
 @NoArgsConstructor
 public class UserDetailsImpl implements UserDetails {
     private Long id;
-    private String phoneId;
+    private String username;
     private String password;
 
     @Builder
     public UserDetailsImpl(Long id, String phoneId, String password) {
         this.id = id;
-        this.phoneId = phoneId;
+        this.username = phoneId;
         this.password = password;
     }
 
