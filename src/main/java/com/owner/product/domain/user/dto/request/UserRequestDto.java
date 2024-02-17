@@ -34,6 +34,7 @@ public class UserRequestDto {
 
     @Getter
     @Setter
+    @Valid
     public static class Login {
         @Pattern(regexp="^\\d{3}-\\d{4}-\\d{4}$", message="휴대전화 번호는 ###-####-#### 형식이어야 합니다.")
         private String phoneId;

@@ -27,12 +27,29 @@ public class JwtTokenProvider {
         String username = authentication.getName();
 
         Date currentDate = new Date();
-        Date expireDate = new Date(currentDate.getTime() + (1000L * 60 * 60 * 24 * 7));
+        Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
 
         String token = Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(currentDate)
-                .setIssuer("blog")
+                .setIssuer("owner")
+                .setExpiration(expireDate)
+                .signWith(key())
+                .compact();
+
+        return token;
+    }
+
+    public String generateRefreshToken(Authentication authentication) {
+        String username = authentication.getName();
+
+        Date currentDate = new Date();
+        Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate + (100L));
+
+        String token = Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(currentDate)
+                .setIssuer("owner-refresher")
                 .setExpiration(expireDate)
                 .signWith(key())
                 .compact();
