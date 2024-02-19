@@ -2,10 +2,17 @@ package com.owner.product.domain.auth.service.core;
 
 import com.owner.product.domain.auth.service.AuthService;
 import com.owner.product.domain.user.dto.request.UserRequestDto;
+import com.owner.product.domain.user.entity.User;
 import com.owner.product.domain.user.repository.UserRepository;
+import com.owner.product.domain.user.security.CustomUserDetailsServiceImpl;
+import com.owner.product.domain.user.security.UserDetailsImpl;
 import com.owner.product.global.auth.JwtTokenProvider;
+import com.owner.product.global.responses.errors.codes.AuthErrorCode;
+import com.owner.product.global.responses.errors.codes.UserErrorCode;
+import com.owner.product.global.responses.errors.exceptions.RestBusinessException;
 import com.owner.product.global.responses.success.codes.AuthSuccessCode;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +21,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final CustomUserDetailsServiceImpl userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -52,14 +61,46 @@ public class AuthServiceImpl implements AuthService {
         response.addCookie(accessCookie);
         response.addCookie(refreshCookie);
 
-        log.error(token);
-        log.error(refreshToken);
-
         return AuthSuccessCode.LOGIN.getMessage();
     }
 
     @Override
-    public String refresh(UserRequestDto.Token userTokenRequest) {
-        return null;
+    public String refresh(HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+        String refreshToken = "";
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("RefreshToken")) {
+                    refreshToken = cookie.getValue();
+                }
+            }
+        }
+
+
+        if(jwtTokenProvider.validateToken(refreshToken) && !refreshToken.isEmpty()) {
+            String username = jwtTokenProvider.getUsernameFromToken(refreshToken);
+
+            UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
+
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    userDetails.getUsername(),
+                    userDetails.getPassword(),
+                    userDetails.getAuthorities()
+            ));
+
+            String newToken = jwtTokenProvider.generateToken(authentication);
+
+            Cookie accessCookie = new Cookie("AccessToken", newToken);
+
+            accessCookie.setHttpOnly(true);
+            accessCookie.setSecure(true);
+
+            response.addCookie(accessCookie);
+
+            return AuthSuccessCode.REFRESH.getMessage();
+        }
+
+        throw new RestBusinessException(AuthErrorCode.FAIL_REFRESH);
     }
 }

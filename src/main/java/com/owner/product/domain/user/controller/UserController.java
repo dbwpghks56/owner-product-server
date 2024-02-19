@@ -27,7 +27,7 @@ public class UserController {
         );
     }
 
-    @GetMapping()
+    @GetMapping("/me")
     public ResponseEntity<SuccessResponse> getMe(
             @AuthenticationPrincipal UserDetailsImpl userDetails
             ) {

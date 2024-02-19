@@ -8,9 +8,12 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Arrays;
 
 @Slf4j
 @RestControllerAdvice
@@ -33,11 +36,21 @@ public class RestControllerHandler {
         return ErrorResponse.toResponseEntity(e.getBindingResult().getFieldErrors());
     }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(final @NotNull BadCredentialsException e,
+                                                                       final @NotNull HttpServletRequest request) {
+        log.error("Handle ['method argument not valid exception'] - code: '{}', message: '{}'",
+                CommonErrorCode.BAD_REQUEST.getErrorCode(), e.getMessage());
+
+        return ErrorResponse.toResponseEntity(e);
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleConstraintViolationException (final @NotNull ConstraintViolationException e,
                                                                                 final @NotNull HttpServletRequest request) {
 
-        log.error("Handle ['method argument not valid exception'] - code: '{}', message: '{}'", CommonErrorCode.BAD_REQUEST.getErrorCode(), e.getMessage());
+        log.error("Handle ['method argument not valid exception'] - code: '{}', message: '{}'",
+                CommonErrorCode.BAD_REQUEST.getErrorCode(), e.getMessage());
 
         return ErrorResponse.toResponseEntity(e);
     }

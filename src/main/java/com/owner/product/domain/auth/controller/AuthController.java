@@ -4,6 +4,7 @@ import com.owner.product.domain.auth.service.AuthService;
 import com.owner.product.domain.user.dto.request.UserRequestDto;
 import com.owner.product.global.responses.success.codes.AuthSuccessCode;
 import com.owner.product.global.responses.success.response.SuccessResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,17 @@ public class AuthController {
         return SuccessResponse.toResponseEntity(
                 AuthSuccessCode.LOGIN,
                 authService.login(userLoginRequest, response)
+        );
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<SuccessResponse> refresh(
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) {
+        return SuccessResponse.toResponseEntity(
+                AuthSuccessCode.REFRESH,
+                authService.refresh(request, response)
         );
     }
 
