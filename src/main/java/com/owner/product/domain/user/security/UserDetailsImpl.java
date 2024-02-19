@@ -1,5 +1,6 @@
 package com.owner.product.domain.user.security;
 
+import com.owner.product.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -3,6 +3,7 @@ package com.owner.product.domain.user.service.core;
 import com.owner.product.domain.user.dto.request.UserRequestDto;
 import com.owner.product.domain.user.entity.User;
 import com.owner.product.domain.user.repository.UserRepository;
+import com.owner.product.domain.user.security.UserDetailsImpl;
 import com.owner.product.domain.user.service.UserService;
 import com.owner.product.global.responses.errors.codes.UserErrorCode;
 import com.owner.product.global.responses.errors.exceptions.RestBusinessException;
@@ -30,6 +31,11 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(userRegisterDto.toEntity());
         return UserSuccessCode.REGISTER.getMessage();
+    }
+
+    @Override
+    public String me(UserDetailsImpl userDetails) {
+        return userDetails.getUsername();
     }
 
     public boolean existsPhoneId(String phoneId) {
