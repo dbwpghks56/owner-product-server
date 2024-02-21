@@ -83,18 +83,17 @@ public class AuthServiceImpl implements AuthService {
 
             UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
 
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    userDetails.getUsername(),
-                    userDetails.getPassword(),
-                    userDetails.getAuthorities()
-            ));
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-            String newToken = jwtTokenProvider.generateToken(authentication);
+
+            String newToken = jwtTokenProvider.generateToken(authenticationToken);
 
             Cookie accessCookie = new Cookie("AccessToken", newToken);
 
             accessCookie.setHttpOnly(true);
             accessCookie.setSecure(true);
+            accessCookie.setPath("/api/v1");
 
             response.addCookie(accessCookie);
 
