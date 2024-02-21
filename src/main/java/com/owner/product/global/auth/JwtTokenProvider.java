@@ -1,5 +1,7 @@
 package com.owner.product.global.auth;
 
+import com.owner.product.global.responses.errors.codes.AuthErrorCode;
+import com.owner.product.global.responses.errors.exceptions.RestBusinessException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -79,7 +81,7 @@ public class JwtTokenProvider {
 
         } catch (ExpiredJwtException e) {
             log.error("만료된 토큰입니다. msg=" + e.getMessage());
-            throw new ExpiredJwtException(null, null, "만료된 토큰입니다. msg=" + e.getMessage());
+            throw new RestBusinessException(AuthErrorCode.TOKEN_EXPIRED);
         } catch (UnsupportedJwtException e) {
             log.error("지원하지 않는 토큰 형식입니다. msg=" + e.getMessage());
             throw new UnsupportedJwtException("지원하지 않는 토큰 형식입니다. msg=" + e.getMessage());
