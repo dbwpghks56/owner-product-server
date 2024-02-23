@@ -4,9 +4,13 @@ import com.owner.product.domain.product.entity.Product;
 import com.owner.product.domain.product.enums.ProductEnum;
 import jakarta.validation.Valid;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 @Getter
 @Setter
@@ -35,6 +39,22 @@ public class ProductRequestDto {
                     .expiredTime(this.expiredTime)
                     .size(this.size)
                     .build();
+        }
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class Find {
+        private static final int MAX_SIZE = 200;
+
+        private Long cursor;
+        private Integer page = 1;
+        private Integer size = 10;
+        private String name;
+
+        public long getOffSet () {
+            return (long) (max(1, page) -1) * min(size, MAX_SIZE);
         }
     }
 }

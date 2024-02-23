@@ -6,4 +6,6 @@ import com.owner.product.domain.product.dto.response.ProductResponseDto;
 public interface ProductService {
     String createProduct(ProductRequestDto.Save createRequestDto);
     ProductResponseDto.FindOne findDetail(Long productId);
+
+    ProductResponseDto.FindWhole findWhole(ProductRequestDto.Find findRequest);
 }

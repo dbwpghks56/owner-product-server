@@ -36,4 +36,10 @@ public class ProductServiceImpl implements ProductService {
 
         return product.toResponseDto();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProductResponseDto.FindWhole findWhole(ProductRequestDto.Find findRequest) {
+        return productRepository.productCursorBasedPaging(findRequest);
+    }
 }
