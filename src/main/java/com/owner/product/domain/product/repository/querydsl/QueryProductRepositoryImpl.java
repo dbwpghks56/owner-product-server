@@ -54,7 +54,6 @@ public class QueryProductRepositoryImpl implements QueryProductRepository{
                 .limit(findRequest.getSize())
                 .offset(findRequest.getOffSet())
                 .orderBy(product.regDate.desc())
-                .distinct()
                 .fetch();
 
         Long lastCursor = productList.get(productList.size() - 1).getId();
