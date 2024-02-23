@@ -54,6 +54,7 @@ public class AuthServiceImpl implements AuthService {
 
         accessCookie.setHttpOnly(true);
         accessCookie.setSecure(true);
+        accessCookie.setMaxAge(360);
 
         refreshCookie.setHttpOnly(true);
         refreshCookie.setSecure(true);
