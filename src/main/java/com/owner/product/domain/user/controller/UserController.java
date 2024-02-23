@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
-public class UserController {
+public class UserController implements UserSwagger {
     private final UserService userService;
 
+    @Override
     @PostMapping()
     public ResponseEntity<SuccessResponse> register(@RequestBody UserRequestDto. @Valid Register userRegisterDto) {
         return SuccessResponse.toResponseEntity(
@@ -27,6 +28,7 @@ public class UserController {
         );
     }
 
+    @Override
     @GetMapping("/me")
     public ResponseEntity<SuccessResponse> getMe(
             @AuthenticationPrincipal UserDetailsImpl userDetails
