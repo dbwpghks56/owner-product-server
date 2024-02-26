@@ -1,10 +1,13 @@
 @echo off
 rem Gradle 빌드 실행
 echo "Gradle build start..."
-./gradlew clean build
+call gradlew clean
+if %errorlevel% neq 0 (
+    echo "Gradle clean fail."
+    exit /b %errorlevel%
+)
 
-
-rem Gradle 빌드 결과 확인
+call gradlew build
 if %errorlevel% neq 0 (
     echo "Gradle build fail."
     exit /b %errorlevel%
@@ -12,9 +15,7 @@ if %errorlevel% neq 0 (
 
 rem Docker Compose로 애플리케이션 실행
 echo "Docker Compose start..."
-docker compose up -d
-
-rem Docker Compose 실행 결과 확인
+docker compose up
 if %errorlevel% neq 0 (
     echo "Docker Compose fail."
     exit /b %errorlevel%
